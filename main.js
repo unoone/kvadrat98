@@ -7,8 +7,10 @@ canvas.height = height;
 
 //ой плохие глобальные переменные
 let timerId;
-let startX = width / 2 - 50;
+let startX = Math.round(width / 2) - 50;
 let startY = height - 50;
+
+let context = canvas.getContext("2d");
 
 canvas.addEventListener("mousedown", event => {
   start = new Date();
@@ -23,23 +25,44 @@ canvas.addEventListener("mouseup", function() {
   timerId = setInterval(draw, 20, endX, endY, speed);
 });
 
-let context = canvas.getContext("2d");
+const mapGenerator = () => {
+  /**условия
+   * 1. центр планеты может находиться не ближе чем 1% от карты
+   * 2.планеты не должны пересекаться
+   */
+  const radius = getRandomInt(10, 50);
+  const mass = Math.pow(radius, 3);
 
+  const X = getRandomInt(70, width - 70);
+  const Y = getRandomInt(50, startY - 100);
+  context.beginPath();
+  context.arc(X, Y, radius, 0, 2 * Math.PI);
+  context.stroke();
+};
+
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+
+mapGenerator();
 context.fillStyle = "green";
+console.log("draw", startX, startY);
 context.fillRect(startX, startY, 50, 50);
 
 function draw(endX, endY, speed) {
-  // console.log(arguments);
   // Очистить холст
+  console.log("clear", startX, startY);
+
   context.clearRect(startX, startY, 50, 50);
 
   context.fillStyle = "green";
-  // startX += 1;
 
   startX += speed[0];
   startY -= speed[1];
+  console.log("draw", startX, startY);
+
   context.fillRect(startX, startY, 50, 50);
-  console.log(startX, endX);
+
   if (Math.round(startX) === endX) {
     clearInterval(timerId);
   }
@@ -64,12 +87,7 @@ const mathPart = (endX, endY, timeOfClick) => {
   let cos = deltaX / hypotenuse;
   let sin = deltaY / hypotenuse;
   let speedX = speed * cos;
-  // if (endX < startX) {
-  //   console.log("зашли");
-  //   let temp = speedX * -1;
-  //   speedX = temp;
-  // }
   let speedY = speed * sin;
-  console.log("math", speedX, speedY);
+
   return [speedX, speedY];
 };
