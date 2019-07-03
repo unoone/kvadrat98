@@ -50,10 +50,10 @@ console.log("draw", startX, startY);
 context.fillRect(startX, startY, 50, 50);
 
 function draw(endX, endY, speed) {
-  // Очистить холст
+  // Очистить квадрат
   console.log("clear", startX, startY);
 
-  context.clearRect(startX, startY, 50, 50);
+  context.clearRect(startX - 1, startY - 1, 55, 55);
 
   context.fillStyle = "green";
 
